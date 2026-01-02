@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATS Resume Scanner</title>
+    <style>
+        body { font-family:Arial, Helvetica, sans-serif; margin:40px; }
+        textarea {width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th , td { border: 1px solid #ccc; padding: 8px; }
+        th { background: #f2f2f2;}
+    </style>
+</head>
+<body>
+    <h2> ATS Resume Scanner</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label><b> Upload Resumes (PDF / DOCX )</b></label><br><br>
+        <input type="file" name="resumes" multiple required><br><br>
+        <label><b>Paste Job Description</b></label><br><br>
+
+        <textarea name="jd" placeholder="Paste JD here...." required></textarea><br><br>
+
+        <button type="submit">Scan Resumes</button>
+    </form>
+
+    {% if results %}
+    <h3> Results</h3>
+    <table>
+        <tr>
+            <th>Resumes</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>ATS Score (%)</th>
+            <th>Matched Keywords </th>
+        </tr>
+        {% for r in results %}
+        <tr>
+            <td>{{ r.name }}</td>
+            <td>{{ r.email }}</td>
+            <td>{{ r.phone }}</td>
+            <td>{{ r.score }}</td>
+            <td>{{ r.skills | join(", ") }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>
