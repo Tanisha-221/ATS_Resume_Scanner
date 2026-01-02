@@ -2,5 +2,4 @@ flask
 pdfplumber
 python-docx
 pdfminer.six
-sentence-transformers
-torch
+gunicorn==20.1.0
