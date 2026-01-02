@@ -2,3 +2,5 @@ flask
 pdfplumber
 python-docx
 pdfminer.six
+sentence-transformers
+torch

@@ -14,7 +14,7 @@
 <body>
     <h2> ATS Resume Scanner</h2>
     <form method="POST" enctype="multipart/form-data">
-        <label><b> Upload Resumes (PDF / DOCX )</b></label><br><br>
+        <label><b> Upload Resume (PDF / DOCX )</b></label><br><br>
         <input type="file" name="resumes" multiple required><br><br>
         <label><b>Paste Job Description</b></label><br><br>
 
@@ -31,7 +31,9 @@
             <th>Email</th>
             <th>Phone</th>
             <th>ATS Score (%)</th>
-            <th>Matched Keywords </th>
+            <th>Matched Skills</th>
+            <th>Missed Skills</th>
+            <th>Areas of improvement</th>
         </tr>
         {% for r in results %}
         <tr>
@@ -40,6 +42,14 @@
             <td>{{ r.phone }}</td>
             <td>{{ r.score }}</td>
             <td>{{ r.skills | join(", ") }}</td>
+            <td>{{ r.missed | join(", ") }}</td>
+            <td>
+                {% if r.improvements %}
+                    Improve on: {{ r.improvements | join(", ") }}
+                {% else %}
+                    Strong Match 
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

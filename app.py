@@ -1,55 +1,92 @@
-from flask import Flask, render_template, request
 import re
-from pdfminer.high_level import extract_text
+from flask import Flask, render_template, request
+import pdfplumber
 from docx import Document
-import os
-from tempfile import NamedTemporaryFile
+from io import BytesIO
 
 app = Flask(__name__)
+ALLOWED_EXTENSIONS = {"pdf", "docx"}
+SKILL_LIST = [
+    "python", "azure", "aws", "docker", "kubernetes", "machine learning", "data analysis", 
+    "sql", "javascript", "react", "node.js", "git", "linux", "html", "css", "cd/cd", 
+    "terraform", "ansible", "splunk", "bash", "power bi", "tableau", "excel", "jira", 
+    "confluence", "agile", "scrum", "rest api", "graphql", "nosql", "mongodb", "postgresql", 
+    "mysql", "redis", "rabbitmq", "apache kafka"
+]
 
 #--------TEXT EXTRACTION---------------
-def extract_resume_text(file):
-    # Handling PDF files
-    if file.filename.endswith(".pdf"):
-        with NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            file.save(temp_file.name)
-            return extract_text(temp_file.name)
-    
-    # Handling DOCX files
-    elif file.filename.endswith(".docx"):
-        doc = Document(file)
-        return "\n".join(p.text for p in doc.paragraphs)
-    
-    return ""
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-#--------Basic Cleaning----------------
-def preprocess(text):
+def extract_pdf(file_stream):
+    with pdfplumber.open(file_stream) as pdf:
+        text = ''
+        for page in pdf.pages:
+            text += page.extract_text() + '\n'
+    return text
+
+def extract_docx(file_stream):
+    doc = Document(file_stream)
+    return "\n".join(p.text for p in doc.paragraphs)
+
+def extract_resume_text(file):
+    content = BytesIO(file.read())
+    if file.filename.endswith(".pdf"):
+        return extract_pdf(content)
+    if file.filename.endswith(".docx"):
+        return extract_docx(content)
+
+#--------SKILLS EXTRACTION----------------
+def extract_skills(text):
+    """Extract skills from the resume text based on a predefined skill list."""
     text = text.lower()
-    text = re.sub(r'[^a-z0-9\s]', ' ', text)
-    tokens = text.split()
-    return set(tokens)
+    skills_found = []
+    
+    # Using word boundaries to match whole words for skills
+    for skill in SKILL_LIST:
+        if re.search(r'\b' + re.escape(skill) + r'\b', text):
+            skills_found.append(skill)
+    
+    return skills_found
 
 #---------INFO EXTRACTION--------------
-def extract_email(text):
-    match = re.search(r'[\w\.-]+@[w\.-]+', text)
-    return match.group() if match else "Not Found"
+def extract_candidate_details(text):
+    details = {}
 
-def extract_phone(text):
-    match = re.search(r'\b\d{10}\b', text)
-    return match.group() if match else "Not Found"
+    # Extract email
+    email = re.search(r'[\w.-]+@[\w.-]+.[a-zA-Z]{2,}', text)
+    details["email"] = email.group() if email else "Not Found"
+
+    # Extract phone number
+    phone = re.search(r'\b\d{10}\b', text)
+    details["phone"] = phone.group() if phone else "Not Found"
+
+    # Extract name (assuming first line is the name)
+    details["name"] = text.strip().split('\n')[0]  # Assuming the first line is the name
+
+    # Extract years of experience
+    exp = re.search(r"(\d+)\s+years?\s+of\s+experience", text.lower())
+    details["experience"] = exp.group() if exp else "Not Mentioned"
+
+    # Extract education
+    edu = re.search(r"(bachelor's|master's|phd|b\.sc|m\.sc|btech|mtech|mba)", text.lower())
+    details["education"] = edu.group() if edu else "Not Mentioned"
+
+    return details
 
 #---------ATS SCORING----------------
 def calculate_score(jd_text, resume_text):
-    jd_toxens = preprocess(jd_text)
-    resume_tokens = preprocess(resume_text)
+    jd_skills = set(extract_skills(jd_text))  # Extract skills from the JD
+    resume_skills = set(extract_skills(resume_text))  # Extract skills from the resume
 
-    if not jd_toxens:
-        return 0, []
-    
-    matched = jd_toxens.intersection(resume_tokens)
-    score = round((len(matched) / len(jd_toxens)) * 100, 2)
+    if not jd_skills:
+        return 0, [], []
 
-    return score, list(matched)
+    matched = resume_skills.intersection(jd_skills)
+    missed = jd_skills.difference(resume_skills)
+    score = round((len(matched) / len(jd_skills)) * 100, 2)
+
+    return score, list(matched), list(missed)
 
 #------------ROUTE---------------------
 @app.route("/", methods=["GET", "POST"])
@@ -61,24 +98,23 @@ def index():
         jd_text = request.form.get("jd")
 
         for file in resumes:
-            if file.filename.endswith((".pdf", ".docx")):
-                resume_text = extract_resume_text(file)
-                score, matched_skills = calculate_score(jd_text, resume_text)
-                result = {
-                    "name": file.filename,
-                    "email": extract_email(resume_text),
-                    "phone": extract_phone(resume_text),
-                    "score": score,
-                    "skills": matched_skills
-                }
+            if not allowed_file(file.filename):
+                continue
 
-                results.append(result)
+            resume_text = extract_resume_text(file)
+            candidate = extract_candidate_details(resume_text)
+            score, matched_skills, missed_skills = calculate_score(jd_text, resume_text)
+            candidate["resume"] = file.filename
+            candidate["score"] = score
+            candidate["skills"] = matched_skills
+            candidate["missed"] = missed_skills
+            candidate["improvements"] = missed_skills if missed_skills else []
 
-            results.sort(key=lambda x: x["score"], reverse=True)
+            results.append(candidate)
 
-        return render_template("index.html", results=results)
+        results.sort(key=lambda x: x["score"], reverse=True)
     
     return render_template("index.html", results=results)
-    
+
 if __name__ == "__main__":
     app.run(debug=True)
