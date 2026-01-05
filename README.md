@@ -46,11 +46,11 @@ This project aims to improve hiring efficiency by reducing manual resume screeni
 ```
 ## Architecture 
 - Logic flow 
-![alt text](Logic.png)
+![Flow Diagram](Logic.png)
 
 
 - System Diagram 
-![alt text](image.png)
+![System Diagram](image.png)
 
 
 ## Setup Instructions
