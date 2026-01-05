@@ -28,53 +28,6 @@
             margin-top: 20px;
         }
     </style>
-
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const jobSeekerForm = document.querySelector("#jobSeekerForm");
-            const hiringTeamForm = document.querySelector("#hiringTeamForm");
-
-            // Handle Job Seeker Form submission
-            if (jobSeekerForm) {
-                jobSeekerForm.addEventListener("submit", function(event) {
-                    event.preventDefault();  // Prevent default form submission
-
-                    const formData = new FormData(jobSeekerForm);  // Create FormData object
-
-                    fetch("https://ats-resume-scanner-1-5t83.onrender.com", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);  // You can handle the response here
-                        window.location.href = "/job_seeker_results";  // Redirect to results page
-                    })
-                    .catch(error => console.error("Error:", error));
-                });
-            }
-
-            // Handle Hiring Team Form submission
-            if (hiringTeamForm) {
-                hiringTeamForm.addEventListener("submit", function(event) {
-                    event.preventDefault();  // Prevent default form submission
-
-                    const formData = new FormData(hiringTeamForm);  // Create FormData object
-
-                    fetch("https://ats-resume-scanner-1-5t83.onrender.com", {
-                        method: "POST",
-                        body: formData
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log(data);  // You can handle the response here
-                        window.location.href = "/hiring_team_results";  // Redirect to results page
-                    })
-                    .catch(error => console.error("Error:", error));
-                });
-            }
-        });
-    </script>
 </head>
 <body>
 
@@ -119,13 +72,8 @@
                 <input type="hidden" name="role" value="hiring_team">
 
                 <div class="mb-3">
-                    <label for="jd_file" class="form-label">Upload Job Description (PDF/DOCX):</label>
-                    <input type="file" name="jd_file" class="form-control" required>
-                </div>
-
-                <div class="mb-3">
-                    <label for="jd_text" class="form-label">Or Paste Job Description Text:</label>
-                    <textarea name="jd_text" class="form-control" rows="6" placeholder="Or paste job description text here..."></textarea>
+                    <label for="jd_text" class="form-label">Paste Job Description Text:</label>
+                    <textarea name="jd_text" class="form-control" rows="6" placeholder="Paste job description text here..."></textarea>
                 </div>
 
                 <div class="mb-3">

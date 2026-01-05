@@ -41,6 +41,17 @@
                     <td>{{ result.skills | join(', ') }}</td>
                     <td>{{ result.missed | join(', ') }}</td>
                     <td>{{ result.improvements | join(', ') }}</td>
+                    <td>
+                        {% if result.score >= 80 %}
+                            Excellent match! Your resume aligns well with the job description.
+                        {% elif result.score >= 60 %}
+                            Good match! You have most of the required skills, but there are a few areas for improvement.
+                        {% elif result.score >= 40 %}
+                            Fair match. Focus on improving the missing skills.
+                        {% else %}
+                            Poor match. Consider updating your resume with more relevant skills.
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
