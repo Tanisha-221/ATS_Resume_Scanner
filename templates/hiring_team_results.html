@@ -57,6 +57,17 @@
                             No Improvements Needed
                         {% endif %}
                     </td>
+                    <td>
+                        {% if result.score >= 80 %}
+                            Excellent match! The candidate has most of the required skills.
+                        {% elif result.score >= 60 %}
+                            Good match, but some skills are missing.
+                        {% elif result.score >= 40 %}
+                            Fair match. You may want to reconsider the candidate.
+                        {% else %}
+                            Poor match. Candidate's resume doesn't align well with the job description.
+                        {% endif %}
+                    </td>
 
                 </tr>
                 {% endfor %}
