@@ -2,67 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Seeker Results</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .table-container {
-            margin-top: 20px;
-        }
-    </style>
+    <title>Resume Analysis Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body>
 
-<div class="container">
-    <h1 class="text-center my-4">Job Seeker Results</h1>
+<body class="bg-light">
 
-    <div class="table-container">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Phone</th>
-                    <th>Resume</th>
-                    <th>ATS Score</th>
-                    <th>Matched Skills</th>
-                    <th>Missed Skills</th>
-                    <th>Improvement Areas</th>
-                    <th>Feedback</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for result in results %}
-                <tr>
-                    <td>{{ result.name }}</td>
-                    <td>{{ result.email }}</td>
-                    <td>{{ result.phone }}</td>
-                    <td>{{ result.resume }}</td>
-                    <td>{{ result.score }}</td>
-                    <td>{{ result.skills | join(', ') }}</td>
-                    <td>{{ result.missed | join(', ') }}</td>
-                    <td>{{ result.improvements | join(', ') }}</td>
-                    <td>
-                        {% if result.score >= 80 %}
-                            Excellent match! Your resume aligns well with the job description.
-                        {% elif result.score >= 60 %}
-                            Good match! You have most of the required skills, but there are a few areas for improvement.
-                        {% elif result.score >= 40 %}
-                            Fair match. Focus on improving the missing skills.
-                        {% else %}
-                            Poor match. Consider updating your resume with more relevant skills.
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="container my-5">
 
-    <div class="d-flex justify-content-center">
-        <a href="/" class="btn btn-primary">Back to Home</a>
+{% for r in results %}
+
+<!-- HEADER -->
+<h2 class="mb-4 text-center">Resume Analysis Report</h2>
+
+<!-- PERSONAL INFO -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Personal Information</div>
+    <table class="table mb-0">
+        <tr><th>Name</th><td>{{ r.name }}</td></tr>
+        <tr><th>Email</th><td>{{ r.email }}</td></tr>
+        <tr><th>Phone</th><td>{{ r.phone }}</td></tr>
+        <tr><th>Education</th><td>{{ r.education }}</td></tr>
+        <tr><th>Experience</th><td>{{ r.experience }}</td></tr>
+    </table>
+</div>
+
+<!-- ATS SCORE -->
+<div class="alert alert-primary text-center fs-4">
+    ATS Score: <strong>{{ r.score if r.score is not none else "N/A" }}%</strong>
+</div>
+
+<!-- MATCHED SKILLS -->
+<div class="card mb-4 border-success">
+    <div class="card-header bg-success text-white">Matched Skills</div>
+    <div class="card-body">
+        {% if r.skills %}
+            {% for s in r.skills %}
+                <span class="badge bg-success me-2 mb-2">{{ s }}</span>
+            {% endfor %}
+        {% else %}
+            <p>No matched skills found</p>
+        {% endif %}
     </div>
 </div>
 
+<!-- MISSED SKILLS -->
+<div class="card mb-4 border-danger">
+    <div class="card-header bg-danger text-white">Missing Skills</div>
+    <div class="card-body">
+        {% if r.missed %}
+            {% for s in r.missed %}
+                <span class="badge bg-danger me-2 mb-2">{{ s }}</span>
+            {% endfor %}
+        {% else %}
+            <p>No missing skills </p>
+        {% endif %}
+    </div>
+</div>
+
+<!-- STRENGTHS -->
+<div class="card mb-4">
+    <div class="card-header fw-bold">Strengths</div>
+    <ul class="list-group list-group-flush">
+        {% if r.strengths %}
+            {% for s in r.strengths %}
+                <li class="list-group-item">{{ s }}</li>
+            {% endfor %}
+        {% else %}
+            <li class="list-group-item">No strengths detected</li>
+        {% endif %}
+    </ul>
+</div>
+
+<!-- FEEDBACK -->
+<div class="alert alert-info">
+{% if r.score >= 80 %}
+Excellent match! Your resume aligns strongly with the job role.
+{% elif r.score >= 60 %}
+Good match. Consider improving missing skills.
+{% elif r.score >= 40 %}
+Average match. Skill enhancement recommended.
+{% elif r.score == 0 %}
+No match. Skill enhancement recommended.
+{% else %}
+Low match. Resume needs significant improvement.
+{% endif %}
+</div>
+
+<hr class="my-5">
+
+{% endfor %}
+
+<a href="/" class="btn btn-secondary">⬅ Back to Home</a>
+
+</div>
 </body>
 </html>

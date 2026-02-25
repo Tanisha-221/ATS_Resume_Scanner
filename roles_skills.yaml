@@ -1,0 +1,173 @@
+# ---------------- GLOBAL SKILLS ----------------
+all_skills:
+  - python
+  - java
+  - c++
+  - sql
+  - mysql
+  - postgresql
+  - mongodb
+  - nosql
+  - redis
+  - git
+  - github
+  - linux
+  - bash
+  - shell scripting
+  - html
+  - css
+  - javascript
+  - typescript
+  - rest api
+  - graphql
+  - json
+  - xml
+  - agile
+  - scrum
+  - jira
+  - confluence
+  - excel
+  - power bi
+  - tableau
+
+# ---------------- ROLE-BASED SKILLS ----------------
+roles:
+
+  sre:
+    - aws
+    - azure
+    - gcp
+    - kubernetes
+    - docker
+    - terraform
+    - ansible
+    - ci/cd
+    - monitoring
+    - prometheus
+    - grafana
+    - splunk
+    - site reliability
+    - incident management
+    - slos
+    - slis
+    - chaos engineering
+
+  devops:
+    - aws
+    - azure
+    - docker
+    - kubernetes
+    - terraform
+    - ansible
+    - jenkins
+    - ci/cd
+    - github actions
+    - gitlab ci
+    - shell scripting
+    - linux
+    - nginx
+
+  backend:
+    - python
+    - java
+    - c++
+    - node.js
+    - spring boot
+    - django
+    - flask
+    - rest api
+    - graphql
+    - sql
+    - mysql
+    - postgresql
+    - mongodb
+    - redis
+    - microservices
+    - oops
+    - data structures
+    - algorithms
+
+  frontend:
+    - html
+    - css
+    - javascript
+    - typescript
+    - react
+    - angular
+    - vue.js
+    - bootstrap
+    - tailwind css
+    - responsive design
+    - cross-browser compatibility
+    - ux/ui principles
+
+  ai_ml:
+    - python
+    - machine learning
+    - deep learning
+    - data science
+    - pandas
+    - numpy
+    - scikit-learn
+    - tensorflow
+    - pytorch
+    - nlp
+    - computer vision
+    - model deployment
+
+  data_engineer:
+    - python
+    - sql
+    - pyspark
+    - apache spark
+    - apache kafka
+    - airflow
+    - etl
+    - data pipelines
+    - big data
+    - hadoop
+    - aws glue
+    - redshift
+    - data warehousing
+    - data modeling
+    - data lakes
+    - dbt
+
+  cybersecurity:
+    - network security
+    - cloud security
+    - penetration testing
+    - vulnerability assessment
+    - siem
+    - splunk
+    - firewalls
+    - encryption
+    - risk assessment
+    - iso 27001
+
+  cloud_engineer:
+    - aws
+    - azure
+    - gcp
+    - cloud architecture
+    - serverless
+    - kubernetes
+    - docker
+    - terraform
+    - monitoring
+    - ci/cd
+    - networking
+    - cloud security
+    - cost optimization
+    - high availability
+    - disaster recovery
+
+  m365:
+    - microsoft 365
+    - azure active directory
+    - exchange online
+    - sharepoint
+    - teams
+    - intune
+    - powershell
+    - endpoint security
